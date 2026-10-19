@@ -3141,6 +3141,14 @@ class LoadingGaugeType(Enum):
     GLOTT = "GLOTT"
 
 
+class MatchMacroNodesForm(BaseModel):
+    operational_point_references: list[
+        OperationalPointReferenceId
+        | OperationalPointReferenceDomestic
+        | OperationalPointReferenceUic
+    ]
+
+
 class MoveOperation(BaseModel):
     """
     JSON Patch 'move' operation representation
@@ -6865,6 +6873,10 @@ class MacroNoteBatchResponse(BaseModel):
 
 class MacroNoteListResponse(PaginationStats):
     results: list[MacroNoteResponse]
+
+
+class MatchMacroNodesResponse(BaseModel):
+    related_operational_points: list[MacroNodeResponse | None]
 
 
 class NeutralSectionExtensions(BaseModel):
