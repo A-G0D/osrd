@@ -270,7 +270,7 @@ const ItineraryModal = ({
           category: train.category ?? undefined,
         });
       } else {
-        if (infraId) fitViewportToInfra(infraId);
+        if (infraId) void fitViewportToInfra(infraId);
         setTrainState(blankNewTrainState(defaultStartTime, scenario.timetable_type));
         setModalFormState({
           name: '',
@@ -685,7 +685,7 @@ const ItineraryModal = ({
     );
 
     const controller = new AbortController();
-    launchPathfinding({
+    void launchPathfinding({
       pathSteps: pathfindingLocations,
       pathStepsMetadataByKey: metadataByPathStepKey,
       rollingStockId: modalFormState.rollingStockId,
@@ -748,7 +748,7 @@ const ItineraryModal = ({
     setPathStepsWithTrailing(reversePathSteps(filledSteps));
   };
 
-  const submitItinerary = (trainType?: EditingTrainType) => {
+  const submitItinerary = async (trainType?: EditingTrainType) => {
     setSubmitAttempted(true);
     setBannerWiggle((c) => c + 1);
 
@@ -786,9 +786,9 @@ const ItineraryModal = ({
     setTrainState(newTrainState);
 
     if (trainScheduleToEditData) {
-      updateTimetable(newTrainState);
+      await updateTimetable(newTrainState);
     } else {
-      createTrain(newTrainState);
+      await createTrain(newTrainState);
     }
     onTrainCreated();
   };
