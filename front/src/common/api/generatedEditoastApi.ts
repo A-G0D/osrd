@@ -4629,6 +4629,9 @@ export type JourneyProposals = {
 };
 export type JourneySearchQuery = {
   destination: OperationalPointPartReference;
+  /** If true, the search is made on the whole stations of origin and destination:
+    all the op sharing the country code + main code with the given ones are considered. */
+  ignore_secondary_code?: boolean;
   infra_id: number;
   origin: OperationalPointPartReference;
   /** Amount of milliseconds from 1970-01-01 00:00:00 UTC to the center of the start window.
