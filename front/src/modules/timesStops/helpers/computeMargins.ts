@@ -173,8 +173,8 @@ function computeMarginsCore(
   const finalDuration = ms2sec(final[nextIndex] - final[pathStepIndex]);
 
   // how much longer it took (s) with the margin than without
-  const provisionalLostTime = Math.round(provisionalDuration - baseDuration);
-  const finalLostTime = Math.round(finalDuration - baseDuration);
+  const provisionalLostTime = provisionalDuration - baseDuration;
+  const finalLostTime = finalDuration - baseDuration;
 
   return { theoreticalMargin, isBoundary, provisionalLostTime, finalLostTime };
 }
