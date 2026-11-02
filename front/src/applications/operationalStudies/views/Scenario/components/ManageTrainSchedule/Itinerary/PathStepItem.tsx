@@ -393,6 +393,7 @@ const PathStepItem = ({
           className={cx('path-step', {
             'requested-point': isTrackOffset,
             'map-selection-mode': isMapSelectionMode,
+            'unrecognized-waypoints-activated': unrecognizedWaypointsActivated,
           })}
         >
           <button

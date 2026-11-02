@@ -371,13 +371,17 @@
           .path-step {
             display: grid;
             grid-template-columns:
-              20px 20px minmax(184px, 1fr) var(--path-step-track-name-width) var(
-                --path-step-type-width
-              )
+              24px minmax(184px, 1fr) var(--path-step-track-name-width) var(--path-step-type-width)
               auto auto;
             align-items: center;
             column-gap: 8px;
             padding-block: 8px;
+
+            &.unrecognized-waypoints-activated {
+              grid-template-columns: 20px 20px minmax(184px, 1fr) var(
+                  --path-step-track-name-width
+                ) var(--path-step-type-width) auto auto;
+            }
 
             &.map-selection-mode {
               .segmented-control {
