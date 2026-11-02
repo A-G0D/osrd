@@ -29,6 +29,10 @@ const DistanceCell = ({
 
   const syncCaret = (e: React.SyntheticEvent<HTMLInputElement>) => {
     setCaretPosition(e.currentTarget.selectionStart ?? 0);
+    setIsEditing(true);
+    if (e.currentTarget === null) {
+      setDraft(formatValue(distanceValue));
+    }
   };
 
   const commit = () => {
@@ -80,13 +84,12 @@ const DistanceCell = ({
       tabIndex={0}
     >
       <input
+        type="text"
+        inputMode="numeric"
         ref={inputRef}
+        className="input"
+        data-testid="distance-cell-input"
         value={draft ?? ''}
-        className="distance-cell__input"
-        onFocus={() => {
-          setDraft(formatValue(distanceValue));
-          setIsEditing(true);
-        }}
         onBlur={commit}
         onChange={(e) => setDraft(e.currentTarget.value)}
         onKeyDown={handleKeyDown}
@@ -95,10 +98,12 @@ const DistanceCell = ({
       />
       {isEditing || (draft !== undefined && draft !== '') ? (
         <div
-          className={`distance-cell__display ${!isEditing ? 'distance-cell__display--saved' : ''}`}
+          className={cx('display', {
+            'saved': isEditing
+          })}
           aria-hidden="true"
         >
-          <span className={cx('value', { 'value-editing': isEditing })}>
+          <span className='value'>
             {isEditing && draft !== undefined ? (
               <>
                 {draft.slice(0, caretPosition)}
@@ -109,7 +114,7 @@ const DistanceCell = ({
               draft
             )}
           </span>
-          <span className="unit-kilometer">km</span>
+          <span className="unit">km</span>
         </div>
       ) : (
         <CellPlaceholder />
