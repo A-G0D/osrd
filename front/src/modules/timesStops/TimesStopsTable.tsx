@@ -691,7 +691,7 @@ const TimesStopsTable = ({
       if (isFirstRow) {
         return (
           <span data-testid="first-position" className="distance-cell">
-            0 km
+            0km
           </span>
         );
       }
@@ -708,8 +708,8 @@ const TimesStopsTable = ({
       }
 
       return (
-        <span data-testid="computed-base-arrival">
-          {value ? String(value).slice(0, 5) + 'km' : '-'}
+        <span data-testid="computed-base-arrival" title={value + 'km'}>
+          {value !== null ? String(value).slice(0, 5) + 'km' : '-'}
         </span>
       );
     },
