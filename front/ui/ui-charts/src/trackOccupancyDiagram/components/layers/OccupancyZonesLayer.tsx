@@ -64,8 +64,9 @@ export const getRenderingInstructions = (
 
     const filteredOccupancyZones = sortedOccupancyZones.filter((zone) => zone.trackId === track.id);
 
-    let primaryStartTime = 0;
-    let lastEndTime = 0;
+    // No zone yet on this track: the first one is never overlapping, whatever its time
+    let primaryStartTime = -Infinity;
+    let lastEndTime = -Infinity;
     let yPosition = OCCUPANCY_ZONE_Y_START;
     let yOffset = Y_OFFSET_INCREMENT;
     let zoneCounter = 0;
