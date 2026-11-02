@@ -366,7 +366,7 @@ const useUpdateTimesStopsTable = (
     [selectedTrain, allRows, scenario.timetable_type]
   );
 
-  const computeReferencePosition = useCallback(
+  const computeReferencePositionUpdate = useCallback(
     (update: ReferencePositionUpdate): ComputedUpdate => {
       const { pathStepKey, updatedPath } = upsertPathStep(update.row, selectedTrain.path, allRows);
 
@@ -397,7 +397,7 @@ const useUpdateTimesStopsTable = (
       if (update.field === 'requestedTheoreticalMargin') return computeMarginUpdate(update);
       if (update.field === 'receptionSignal') return computeReceptionSignalUpdate(update);
       if (update.field === 'referenceBaseArrival') return computeReferenceBaseArrival(update);
-      if (update.field === 'referencePosition') return computeReferencePosition(update);
+      if (update.field === 'referencePosition') return computeReferencePositionUpdate(update);
       return computeTimesUpdate(update);
     },
     [
@@ -407,7 +407,7 @@ const useUpdateTimesStopsTable = (
       computeReceptionSignalUpdate,
       computeTimesUpdate,
       computeReferenceBaseArrival,
-      computeReferencePosition,
+      computeReferencePositionUpdate,
     ]
   );
 
