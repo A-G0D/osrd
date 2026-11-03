@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { sortBy } from 'lodash';
+import { groupBy, sortBy } from 'lodash';
 
 import { TimeChartCanvasContext } from '../../../common/context';
 import { indexToColor } from '../../../common/helpers/colors';
@@ -25,7 +25,7 @@ import {
   drawZoneTrailingText,
 } from '../helpers/drawElements/drawOccupancyZones';
 
-export type RenderingInstruction =
+type RenderingInstruction =
   | {
       type: 'occupancyZone';
       zone: OccupancyZone;
@@ -58,11 +58,12 @@ export const getRenderingInstructions = (
   if (!tracks || !occupancyZones || occupancyZones.length === 0) return instructions;
 
   const sortedOccupancyZones = occupancyZones.toSorted((a, b) => a.startTime - b.startTime);
+  const zonesByTrackId = groupBy(sortedOccupancyZones, (zone) => zone.trackId);
 
   tracks.forEach((track, index) => {
     const trackY = topPadding + CANVAS_PADDING + index * TRACK_HEIGHT_CONTAINER;
 
-    const filteredOccupancyZones = sortedOccupancyZones.filter((zone) => zone.trackId === track.id);
+    const filteredOccupancyZones = zonesByTrackId[track.id] ?? [];
 
     // No zone yet on this track: the first one is never overlapping, whatever its time
     let primaryStartTime = -Infinity;
@@ -130,12 +131,14 @@ export const getRenderingInstructions = (
 
       // else, if there are too much trains:
       else {
-        const nextIndex = filteredOccupancyZones.findIndex(
-          (filteredZone, i) => i > zoneIndex && filteredZone.startTime >= lastEndTime
-        );
-
-        // nextIndex === -1 means all remaining zones overlap — skip to the end
-        const endIndex = nextIndex === -1 ? filteredOccupancyZones.length : nextIndex;
+        // skip the zones up to the next one not overlapping, or to the end
+        let endIndex = zoneIndex + 1;
+        while (
+          endIndex < filteredOccupancyZones.length &&
+          filteredOccupancyZones[endIndex].startTime < lastEndTime
+        ) {
+          endIndex++;
+        }
         const remainingTrainsNb = endIndex - zoneIndex;
 
         instructions.push({
