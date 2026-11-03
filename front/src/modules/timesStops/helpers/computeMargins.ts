@@ -46,6 +46,8 @@ function computeMarginsWithoutPathItemTimes(
     refBaseArrival !== undefined && nextRefBaseArrival !== undefined
       ? nextRefBaseArrival - refBaseArrival
       : undefined;
+
+  let provisionalLostTime: number | undefined;
   const finalLostTime =
     arrival !== undefined && nextArrival !== undefined && refBaseArrivalDifference
       ? ms2sec(nextArrival - (arrival + (stopFor ?? 0)) - refBaseArrivalDifference)
@@ -67,20 +69,19 @@ function computeMarginsWithoutPathItemTimes(
     const nextDistance = mmToKm(nextReferencePosition);
     const distanceDifference = nextDistance - distance;
 
-    return {
-      provisionalLostTime: (distanceDifference / 100) * theoreticalMargin.value * 60,
-      finalLostTime,
-    };
+    provisionalLostTime = (distanceDifference / 100) * theoreticalMargin.value * 60;
   } else if (theoreticalMargin.unit === MarginUnit.percent) {
     if (refBaseArrivalDifference === undefined) return undefinedMarginTimes;
 
-    return {
-      provisionalLostTime: ms2sec(refBaseArrivalDifference) * (theoreticalMargin.value / 100),
-      finalLostTime,
-    };
+    provisionalLostTime = ms2sec(refBaseArrivalDifference) * (theoreticalMargin.value / 100);
+  } else {
+    return undefinedMarginTimes;
   }
 
-  return undefinedMarginTimes;
+  return {
+    provisionalLostTime,
+    finalLostTime,
+  };
 }
 
 /** Extracts the theoretical margin for each path step in the train schedule,
