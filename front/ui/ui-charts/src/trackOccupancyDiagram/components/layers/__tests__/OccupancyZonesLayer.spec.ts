@@ -44,9 +44,9 @@ describe('getRenderingInstructions', () => {
 
     const instructions = getRenderingInstructions(tracks, zones, TOP_PADDING);
 
-    expect(instructions).toHaveLength(zones.length);
-    expect(instructions.every((instruction) => instruction.type === 'occupancyZone')).toBe(true);
-    expect(instructions.every((instruction) => instruction.offsetY === TRACK_CENTER_Y)).toBe(true);
+    expect(instructions).toEqual(
+      zones.map(() => expect.objectContaining({ type: 'occupancyZone', offsetY: TRACK_CENTER_Y }))
+    );
   });
 
   it('should treat the zones on each side of the time origin the same way', () => {
