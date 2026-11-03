@@ -229,7 +229,19 @@ class STDCMHeuristicBuilder(
                     BlockLocation(block, blockInfra.getBlockLength(block)),
                     pendingBlock.stepIndex,
                 )
-            if (newStep == null || !steps[newStep.stepIndex].canBacktrack) {
+            if (newStep != null && newStep.stepIndex == 0) {
+                // We're at the start of the path: start offset should be the exact value.
+                val newBlock =
+                    makePendingBlock(
+                        block,
+                        newStep.blockLocation.offset,
+                        blockInfra.getBlockLength(block),
+                        0,
+                        pendingBlock.remainingTimeAtBlockStart,
+                        predecessorEndSpeed,
+                    )
+                newBlock?.let { res.add(it) }
+            } else if (newStep == null || !steps[newStep.stepIndex].canBacktrack) {
                 // The step is unchanged or does not backtrack: the path goes through the whole
                 // block.
                 val newBlock =
@@ -238,18 +250,6 @@ class STDCMHeuristicBuilder(
                         Offset.zero(),
                         blockInfra.getBlockLength(block),
                         newStep?.stepIndex ?: pendingBlock.stepIndex,
-                        pendingBlock.remainingTimeAtBlockStart,
-                        predecessorEndSpeed,
-                    )
-                newBlock?.let { res.add(it) }
-            } else if (newStep.stepIndex == 0) {
-                // We're at the start of the path: start offset should be the exact value.
-                val newBlock =
-                    makePendingBlock(
-                        block,
-                        newStep.blockLocation.offset,
-                        blockInfra.getBlockLength(block),
-                        0,
                         pendingBlock.remainingTimeAtBlockStart,
                         predecessorEndSpeed,
                     )
